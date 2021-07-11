@@ -15,15 +15,15 @@
 <li>
     <div class="date">
         <div class="month">
-            @course.DateTime.ToString("MM")
+            @course.Datetime.ToString("MM")
         </div>
         <div class="day">
-            @course.DateTime.ToString("dd")
+            @course.Datetime.ToString("dd")
         </div>
     </div>
     <div class="details">
         <span class="lecture">
-            @course.LecturerName
+            @course.LectureName
         </span>
         <div>
             <span class="category">
@@ -31,8 +31,8 @@
             </span>
         </div>
         <div class="action">
-            <a href="">Edit</a>
-            <a href="">Delete</a>
+            <a href="@Url.Action("Edit", "Courses", new { id = course.Id })">Edit</a>
+            <a href="@Url.Action("Delete", "Courses", new { id = course.Id })">Delete</a>
         </div>
     </div>
 </li>}
