@@ -1,4 +1,5 @@
-﻿using BigSchool1.Models;
+﻿using BigSchool1;
+using BigSchool1.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using System;
@@ -7,21 +8,46 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace BigSchool1.Controllers
+namespace BigSchool.Controllers
 {
     public class HomeController : Controller
     {
         public ActionResult Index()
         {
-
             BigSchoolContext con = new BigSchoolContext();
-            var upcommingcourse = con.Courses.Where(p => p.Datetime > DateTime.Now).OrderBy(p => p.Datetime).ToList();
-            foreach (Course i in upcommingcourse)
+            var upcommingCourse = con.Courses.Where(p => p.Datetime >
+            DateTime.Now).OrderBy(p => p.Datetime).ToList();
+
+            var userID = User.Identity.GetUserId();
+            foreach (Course i in upcommingCourse)
+
             {
-                ApplicationUser user = System.Web.HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>().FindById(i.LectureId);
+                ApplicationUser user =
+
+                System.Web.HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>(
+                ).FindById(i.LectureId);
                 i.Name = user.Name;
+
+                if (userID != null)
+
+                {
+                    i.isLogin = true;
+
+                    Attendance find = con.Attendances.FirstOrDefault(p =>
+
+                    p.CourseId == i.Id && p.Attendee == userID);
+                    if (find == null)
+                        i.isShowGoing = true;
+
+                    Following findFollow = con.Followings.FirstOrDefault(p =>
+
+                    p.FollowerId == userID && p.FolloweeId == i.LectureId);
+
+                    if (findFollow == null)
+                        i.isShowFollow = true;
+                }
             }
-            return View(upcommingcourse);
+            return View(upcommingCourse);
         }
 
         public ActionResult About()
